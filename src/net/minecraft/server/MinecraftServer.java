@@ -1,3 +1,5 @@
+// Changed by AntonDeveloper
+
 package net.minecraft.server;
 
 import java.io.File;
@@ -154,22 +156,22 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
         threadcommandreader.setDaemon(true);
         threadcommandreader.start();
         ConsoleLogManager.init();
-        logger.info("Starting minecraft server version 1.2.5");
+        logger.info("Starte Minecraft-Server in der Version 1.2.5");
 
         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L)
         {
-            logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
+            logger.warning("Starte den Server mit mehr RAM: \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
         }
 
-        logger.info("Loading properties");
+        logger.info("Lade Einstellungen...");
         propertyManagerObj = new PropertyManager(new File("server.properties"));
         hostname = propertyManagerObj.getStringProperty("server-ip", "");
         onlineMode = propertyManagerObj.getBooleanProperty("online-mode", true);
         spawnPeacefulMobs = propertyManagerObj.getBooleanProperty("spawn-animals", true);
         field_44002_p = propertyManagerObj.getBooleanProperty("spawn-npcs", true);
         pvpOn = propertyManagerObj.getBooleanProperty("pvp", true);
-        allowFlight = propertyManagerObj.getBooleanProperty("allow-flight", false);
-        motd = propertyManagerObj.getStringProperty("motd", "A Minecraft Server");
+        allowFlight = propertyManagerObj.getBooleanProperty("allow-flight", true);
+        motd = propertyManagerObj.getStringProperty("motd", "Ein Minecraft-Server");
         motd.replace('\247', '$');
         InetAddress inetaddress = null;
 
@@ -189,13 +191,13 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
         {
             logger.warning("**** FAILED TO BIND TO PORT!");
             logger.log(Level.WARNING, (new StringBuilder()).append("The exception was: ").append(ioexception.toString()).toString());
-            logger.warning("Perhaps a server is already running on that port?");
+            logger.warning("Vielleicht läuft bereits ein Server auf diesem Port?");
             return false;
         }
 
         if (!onlineMode)
         {
-            logger.warning("**** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!");
+            logger.warning("**** SERVER LÄUFT IM UNSICHEREN MODUS!");
             logger.warning("The server will make no attempt to authenticate usernames. Beware.");
             logger.warning("While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.");
             logger.warning("To change this, set \"online-mode\" to \"true\" in the server.settings file.");
@@ -272,7 +274,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
     {
         if (par1ISaveFormat.isOldMapFormat(par2Str))
         {
-            logger.info("Converting map!");
+            logger.info("Konvertiere Map...");
             par1ISaveFormat.convertMapFormat(par2Str, new ConvertProgressUpdater(this));
         }
 
@@ -310,7 +312,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
 
             worldMngr[j].addWorldAccess(new WorldManager(this, worldMngr[j]));
             worldMngr[j].difficultySetting = propertyManagerObj.getIntProperty("difficulty", 1);
-            worldMngr[j].setAllowedSpawnTypes(propertyManagerObj.getBooleanProperty("spawn-monsters", true), spawnPeacefulMobs);
+            worldMngr[j].setAllowedSpawnTypes(propertyManagerObj.getBooleanProperty("spawn-monsters", false), spawnPeacefulMobs);
             worldMngr[j].getWorldInfo().setGameType(i);
             configManager.setPlayerManager(worldMngr);
         }
@@ -339,7 +341,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
                     {
                         int k1 = (c * 2 + 1) * (c * 2 + 1);
                         int i2 = (i1 + c) * (c * 2 + 1) + (j1 + 1);
-                        outputPercentRemaining("Preparing spawn area", (i2 * 100) / k1);
+                        outputPercentRemaining("Bereite Map vor...", (i2 * 100) / k1);
                         l = l1;
                     }
 
@@ -377,7 +379,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
      */
     private void saveServerWorld()
     {
-        logger.info("Saving chunks");
+        logger.info("Speichere Map...");
 
         for (int i = 0; i < worldMngr.length; i++)
         {
@@ -392,7 +394,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
      */
     private void stopServer()
     {
-        logger.info("Stopping server");
+        logger.info("Stoppe Server");
 
         if (configManager != null)
         {
@@ -439,7 +441,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
 
                     if (var7 < 0L)
                     {
-                        logger.warning("Time ran backwards! Did the system time change?");
+                        logger.warning("Die Zeit lief rückwärts! Wurde die System-Zeit verändert?");
                         var7 = 0L;
                     }
 
@@ -481,7 +483,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
         catch (Throwable var58)
         {
             var58.printStackTrace();
-            logger.log(Level.SEVERE, "Unexpected exception", var58);
+            logger.log(Level.SEVERE, "Unerwarteter Fehler", var58);
 
             while (this.serverRunning)
             {
@@ -586,7 +588,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
         }
         catch (Exception exception)
         {
-            logger.log(Level.WARNING, "Unexpected exception while parsing console command", exception);
+            logger.log(Level.WARNING, "Unerwarteter Fehler beim Übertragen des Befehls", exception);
         }
 
         field_40027_f[deathTime % 100] = System.nanoTime() - l;
@@ -646,7 +648,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
         }
         catch (Exception exception)
         {
-            logger.log(Level.SEVERE, "Failed to start the minecraft server", exception);
+            logger.log(Level.SEVERE, "Konnte Server nicht starten!", exception);
         }
     }
 
@@ -767,7 +769,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
         }
         else
         {
-            return "No settings file";
+            return "Keine Einstellungs-Datei!";
         }
     }
 
