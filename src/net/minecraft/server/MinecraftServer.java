@@ -1,3 +1,4 @@
+// Copyright 2012 ZeroTools
 // Translated to german by AntonDeveloper
 // Coded by Buddy251
 
