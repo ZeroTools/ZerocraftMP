@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.cherrytools.language.Launcher;
 import net.minecraft.src.AnvilSaveConverter;
 import net.minecraft.src.AnvilSaveHandler;
 import net.minecraft.src.AxisAlignedBB;
@@ -127,6 +128,7 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
     public long field_48082_x[];
     private RConThreadQuery rconQueryThread;
     private RConThreadMain rconMainThread;
+    private static String gamemode;
 
     public MinecraftServer()
     {
@@ -161,8 +163,23 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
             logger.warning("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
         }
 
-        logger.info("Loading properties");
         propertyManagerObj = new PropertyManager(new File("server.properties"));
+        logger.info("Loading gamemode");
+        gamemode = propertyManagerObj.getStringProperty("gamemode", "null");
+        if(gamemode.equalsIgnoreCase("null")) {
+            logger.warning("Gamemode is not defined!");
+            System.exit(0);
+            return false;
+        }
+        if(!new File(gamemode + ".gm").exists()) {
+            logger.warning("Gamemode not exists!");
+            System.exit(0);
+            return false;
+        }
+        logger.info("**** " + gamemode);
+        Launcher.loadGamemode(new File(gamemode + ".gm"), true);
+        logger.info("****");
+        logger.info("Loading properties");
         hostname = propertyManagerObj.getStringProperty("server-ip", "");
         onlineMode = propertyManagerObj.getBooleanProperty("online-mode", true);
         spawnPeacefulMobs = propertyManagerObj.getBooleanProperty("spawn-animals", true);
@@ -631,8 +648,8 @@ public class MinecraftServer implements Runnable, ICommandListener, IServer
 
     public static void main(String par0ArrayOfStr[])
     {
+        
         StatList.func_27092_a();
-
         try
         {
             MinecraftServer minecraftserver = new MinecraftServer();
