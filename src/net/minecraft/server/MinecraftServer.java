@@ -1,4 +1,5 @@
-// Changed by AntonDeveloper
+// Translated by AntonDeveloper
+// Coded by Buddy251
 
 package net.minecraft.server;
 
