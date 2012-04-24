@@ -1,4 +1,4 @@
-// Translated by AntonDeveloper
+// Translated to german by AntonDeveloper
 // Coded by Buddy251
 
 package net.minecraft.server;
